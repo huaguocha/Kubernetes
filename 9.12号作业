@@ -1,3 +1,0 @@
-在K8S集群上部署nginx和tomcat，具体要求如下：
-①：在k8s中部署nginx作为前端服务，调度到node01上运行, 能通过集群外部访问
-②：在k8s中部署tomcat服务，调度到node02上运行，nginx通过DNS域名对tomcat进行负载
