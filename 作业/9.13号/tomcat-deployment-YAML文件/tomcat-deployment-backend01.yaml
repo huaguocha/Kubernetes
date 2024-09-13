@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tomcat-deployment-backend01
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tomcat-backend01
+  template:
+    metadata:
+      labels:
+        app: tomcat-backend01
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: k8s-node02
+      containers:
+      - name: tomcat
+        image: tomcat:latest
+        ports:
+        - containerPort: 8080
