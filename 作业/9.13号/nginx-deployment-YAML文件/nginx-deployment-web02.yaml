@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment-web02
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-web02
+  template:
+    metadata:
+      labels:
+        app: nginx-web02
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: k8s-node01
+      containers:
+      - name: nginx
+        image: nginx:latest
+        ports:
+        - containerPort: 80
