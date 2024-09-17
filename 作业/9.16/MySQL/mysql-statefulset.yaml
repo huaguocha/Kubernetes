@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mysql
+  namespace: helm
+spec:
+  replicas: 1
+  serviceName: mysql-service
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+      - name: mysql
+        image: mysql:5.7
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: password
+      imagePullSecrets:
+      - name: k8s-auth
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: mysql
+          containerPort: 3306
+          protocol: TCP
+        #envFrom:
+        #- configMapRef:
+        #    name: mysql-config-map
+        resources:
+          requests:
+            cpu: 1
+            memory: 512Mi
+          limits:
+            cpu: 1
+            memory: 512Mi
+        volumeMounts:
+        - name: mysql-data
+          mountPath: /var/lib/mysql
+      imagePullSecrets:
+        - name: k8s-auth
+  volumeClaimTemplates:
+  - metadata:
+      name: mysql-data
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      #volumeMode: Filesystem
+      resources:
+        requests:
+          storage: 1Gi
+      storageClassName: nfs-sc
