@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: helm-repo-nginx
+  namespace: helm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: helm-repo-nginx
+  template:
+    metadata:
+      labels:
+        app: helm-repo-nginx
+      annotations:
+        version/config: 20240906-008 # 用于触发deploeyment滚动更新，每次修改configmap后需>要更新这个字段
+    spec:
+      containers:
+      - name: helm-repo-nginx
+        image: nginx:1.15.0
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: conf-vol
+          mountPath: /etc/nginx/conf.d
+        - name: data-nfs
+          mountPath: /usr/share/nginx/charts
+      volumes:
+      - name: conf-vol
+        configMap:
+          name: helm-repo-nginx-conf
+      - name: data-nfs
+        persistentVolumeClaim:
+          claimName: helm-nginx-repo-pvc
