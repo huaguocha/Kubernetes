@@ -1,0 +1,16 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: nfs-sc
+  namespace: mall
+# 此处指定了csidrivers的名称
+provisioner: nfs.csi.k8s.io
+parameters:
+  # NFS的Server
+  server: 172.16.0.164
+  # NFS的存储路径
+  share: /data/apps/nfs/pub
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
+mountOptions:
+  - nfsvers=4.1
